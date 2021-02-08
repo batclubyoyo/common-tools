@@ -75,7 +75,7 @@ func LogrusInit(path string) {
 	    WithMaxAge 和 WithRotationCount二者只能设置一个
 	*/
 	writer, _ := rotatelogs.New(
-		path+".%Y%m%d%",
+		path+".%Y%m%d",
 		rotatelogs.WithLinkName(path),
 		rotatelogs.WithRotationTime(time.Duration(24)*time.Hour),
 		// rotatelogs.WithMaxAge(time.Duration(180)*time.Second),
