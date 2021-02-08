@@ -5,7 +5,14 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
+
+	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
+	"github.com/sirupsen/logrus"
 )
+
+// AppLogger 全局引用
+var AppLogger = logrus.New()
 
 var (
 	// Trace 记录所有日志
@@ -48,9 +55,28 @@ func InitLogger(filePath string) {
 		log.Ldate|log.Ltime|log.Lshortfile)
 }
 
-// func main() {
-//     Trace.Println("I have something standard to say")
-//     Info.Println("Special Information")
-//     Warning.Println("There is something you need to know about")
-//     Error.Println("Something has failed")
-// }
+/*
+LogrusInit 全局Logger初始化
+*/
+func LogrusInit(path string) {
+
+	AppLogger.SetFormatter(&logrus.JSONFormatter{})
+	AppLogger.SetLevel(logrus.InfoLevel)
+	AppLogger.SetReportCaller(true)
+
+	/* 日志轮转相关函数
+	    `WithLinkName` 为最新的日志建立软连接
+	    `WithRotationTime` 设置日志分割的时间，隔多久分割一次
+		`WithMaxAge` 设置文件清理前的最长保存时间
+		`WithRotationCount` 设置文件清理前最多保存的个数
+	    WithMaxAge 和 WithRotationCount二者只能设置一个
+	*/
+	writer, _ := rotatelogs.New(
+		path+".%Y%m%d%H%M",
+		rotatelogs.WithLinkName(path),
+		rotatelogs.WithRotationTime(time.Duration(24)*time.Hour),
+		// rotatelogs.WithMaxAge(time.Duration(180)*time.Second),
+		rotatelogs.WithRotationCount(7),
+	)
+	AppLogger.SetOutput(writer)
+}
