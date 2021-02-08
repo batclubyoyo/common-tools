@@ -59,8 +59,10 @@ func InitLogger(filePath string) {
 LogrusInit 全局Logger初始化
 */
 func LogrusInit(path string) {
+	customFormatter := new(logrus.JSONFormatter)
+	customFormatter.TimestampFormat = "2006-01-02 15:04:05"
 
-	AppLogger.SetFormatter(&logrus.JSONFormatter{})
+	AppLogger.SetFormatter(customFormatter)
 	AppLogger.SetLevel(logrus.InfoLevel)
 	AppLogger.SetReportCaller(true)
 
@@ -72,7 +74,7 @@ func LogrusInit(path string) {
 	    WithMaxAge 和 WithRotationCount二者只能设置一个
 	*/
 	writer, _ := rotatelogs.New(
-		path+".%Y%m%d%H%M",
+		path+".%Y%m%d%",
 		rotatelogs.WithLinkName(path),
 		rotatelogs.WithRotationTime(time.Duration(24)*time.Hour),
 		// rotatelogs.WithMaxAge(time.Duration(180)*time.Second),
