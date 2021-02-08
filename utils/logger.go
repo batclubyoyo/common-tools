@@ -61,6 +61,7 @@ LogrusInit 全局Logger初始化
 func LogrusInit(path string) {
 	customFormatter := new(logrus.JSONFormatter)
 	customFormatter.TimestampFormat = "2006-01-02 15:04:05"
+	customFormatter.DisableTimestamp = false
 
 	AppLogger.SetFormatter(customFormatter)
 	AppLogger.SetLevel(logrus.InfoLevel)
